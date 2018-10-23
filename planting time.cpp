@@ -13,8 +13,13 @@ class texturec{
 			ancho=_x;
 			largo=_y;
 			sprite.setTexture(texture);
-		}
+}
 };
+void mostrarmenu(RenderWindow &a,texturec *arr,int len){
+	for(int i=0;i<len;i++){
+		a.draw(arr[i].sprite);
+	}
+}
 int main()
 {
     // Create the main window
@@ -29,6 +34,10 @@ int main()
 	texturec select("img/SELECCIONAR.png",jugar.ancho,jugar.largo);
 	select.sprite.setPosition(select.ancho,select.largo);
 	texturec fondo("img/fondo.jpg",800,600);
+	texturec arr[]={fondo,jugar,creditos,salir,select};
+	texturec creditos1("img/fondo.jpg",400,200);
+	int mostrar=0;
+	texturec arr2[]={creditos1};
     // Create a graphical text to display
     /*sf::Font font;
     if (!font.loadFromFile("arial.ttf"))
@@ -43,46 +52,51 @@ int main()
     // Start the game loop
     while (window.isOpen())
     {
-        // Process events
-        sf::Event event;
+ 		sf::Event event;
         while (window.pollEvent(event))
         {
-            // Close window: exit
+
             if (event.type == sf::Event::Closed)
                 window.close();
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
 					if(select.largo==250){
-            			select.sprite.setPosition(350,100);
+            			arr[4].sprite.setPosition(350,100);
             			select.largo=100;
             			break;
 					}else if(select.largo==400){
-            			select.sprite.setPosition(350,250);
+            			arr[4].sprite.setPosition(350,250);
             			select.largo=250;
 					}		
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
 					if(select.largo==250){
-            			select.sprite.setPosition(350,400);
+            			arr[4].sprite.setPosition(350,400);
             			select.largo=400;
             			break;
 					}else if(select.largo==100){
-            			select.sprite.setPosition(350,250);
+            			arr[4].sprite.setPosition(350,250);
             			select.largo=250;
 					}		
 			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)&&select.largo==400)
+			    window.close();
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)&&select.largo==250){
+				mostrar=1;
+			}
+			   
         }
-        // Clear screen
-        window.clear();
-        // Draw the sprite
-        window.draw(fondo.sprite);        
-        window.draw(jugar.sprite);
-        window.draw(creditos.sprite);
-        window.draw(salir.sprite);
-        window.draw(select.sprite);
-        // Draw the string
-        //window.draw(text);
-        // Update the window
-        window.display();
+        
+		if(mostrar==0){
+			window.clear();
+			mostrarmenu(window,arr,5);
+			window.display();
+	        // Process events
+		}else if(mostrar==1){
+			window.clear();
+			mostrarmenu(window,arr2,1);
+			window.display();
+		}
+		
     }
     return EXIT_SUCCESS;
 }
