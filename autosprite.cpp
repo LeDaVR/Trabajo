@@ -2,9 +2,11 @@
 #include <stdlib.h>
 using namespace std;
 using namespace sf;
-AutoSprite::AutoSprite(string _img=""){
+AutoSprite::AutoSprite(string _img){
 		texture.loadFromFile(_img);
 		sprite.setTexture(texture);
+		ancho=0;largo=0;
+		x=0;y=0;
 }
 void AutoSprite::objeto(int _x,int _y){
 	ancho=texture.getSize().x;

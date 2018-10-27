@@ -11,11 +11,11 @@ void movermenu(AutoSprite *autosprite,int cx,int cy,int limitsup,int limitinf){
 	int x=autosprite->x;
 	int y=autosprite->y;
 	if (Keyboard::isKeyPressed(Keyboard::Up)&&y!=limitsup){
-		y-=cy;	
-		autosprite->posajustar(x,y);		
+		y-=cy;
+		autosprite->posajustar(x,y);
 	}
 	if (Keyboard::isKeyPressed(Keyboard::Down)&&y!=limitinf){
-		y+=cy;	
+		y+=cy;
 		autosprite->posajustar(x,y);
 	}
 }
@@ -39,11 +39,11 @@ int main()
 	juego[0]=new AutoSprite("img/fondo.jpg");	
 	juego[1]=new AutoSprite("img/angry.png");
 	juego[2]=new AutoSprite("img/angry.png");
-	juego[3]=new AutoSprite("img/angry.png");
+	juego[3]=new AutoSprite("img/ike.png");
 	juego[1]->objeto(100,100);
-	juego[1]->escalar(0.5,0.5);
 	juego[2]->objeto(250,250);
 	juego[3]->objeto(400,400);
+	juego[3]->escalar(0.1,0.1);	
 	int mostrar=0;
     while (window.isOpen())
     {
