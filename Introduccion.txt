@@ -1,0 +1,39 @@
+// la palabra entorno se refiere a un grupo de AutoSprites
+//--------------------CLASE AUTOSPRITE----------------------------------------------
+
+		//constructor :
+		//Autosprite asprite("imagen");
+		//carga una imagen sin dimensionarla
+
+		//void objeto(poscicion en x,posicion en y);
+		//dimensiona un Autosprite y señala sus coordenadas (esta funcion les da la propiedad de un objeto solido)
+
+		//getancho();
+		//retorna el ancho de un AutoSprite
+
+		//getlargo();
+		//retorna el largo de un AutoSprite
+
+		//void posajustar(coordenada x,coordenada y);
+		//ajusta la poscicion de un AutoSprite
+		
+		//void escalar(escala en x,escala en y);
+		//cambia las dimensiones de un AutoSprite ( 1 es la escala normal)
+		// se puede escalar una imagen (si se desea que el objeto sea solido entonces escalar debe ejecutado despues de objeto();  )
+		
+//------------------------PARA MOVER AUTO SPRITES QUE YA SON OBJETOS-------------------------------------------------------------------------------------------
+
+		//void mover(personaje,entorno al que pertenece el personaje,velocidad en x,velocidad en y,cantidad de elementos del escenario);
+		// para mover al personaje controlado por el usuario (el personaje es un autosprite y el entorno un arreglo de autosprites)
+		
+		//void moverentidad( nombre de la entidad , entorno al que pertenece la entidad , velocidad en x, velocidad en y , cantidad de elementos del escenario);
+		//genera un movimiento aleatorio si asi se desea en el objeto
+		
+//----------------------PARA MOSTRAR UN GRUPO DE AUTOSPRITES----------------------------------------------------------------------------------------------------
+
+		//LOS GRUPOS DE AUTOSPRITES SON ARREGLOS DE DIRECCIONES DE MEMORIA DE AUTOSPRITE 
+		//Y SON DECLARADOS DE ESTA FORMA
+		//AutoSprite **nombre = new AutoSprite*[tamaño]
+		
+		//void mostrarset(nombre de la ventana ,entorno al que pertenece la ventana ,cantidad de elementos del entorno);
+		//sirve para mostrar un conjunto de AutoSprites
