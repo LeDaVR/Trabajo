@@ -1,33 +1,59 @@
-#include "autosprite.h"
-#include <stdlib.h>
-using namespace std;
-using namespace sf;
-AutoSprite::AutoSprite(string _img){
-		texture.loadFromFile(_img);
-		sprite.setTexture(texture);
-		ancho=0;largo=0;
-		x=0;y=0;
+#include "autoSprite.h"
+
+AutoSprite::AutoSprite(std::string archivo=""){
+    textura.loadFromFile(archivo);
+    sprite.setTexture(textura);
+
+    posicion.x=0;
+    posicion.y=0;
+    dimensiones.x = textura.getSize().x;
+    dimensiones.y = textura.getSize().y;
 }
-void AutoSprite::objeto(int _x,int _y){
-	ancho=texture.getSize().x;
-	largo=texture.getSize().y;
-	this->x=_x;
-	this->y=_y;
-	sprite.setPosition(x,y);
+
+void AutoSprite::ajustarPosicion(float x,float y){
+    posicion.x = x;
+    posicion.y = y;
+    sprite.setPosition(posicion);
 }
-int AutoSprite::getancho(){
-	return ancho;
+
+void AutoSprite::escalar(float x,float y){
+	sprite.setScale(x/dimensiones.x,y/dimensiones.y);
+    dimensiones.x =x;
+    dimensiones.y =y;
+   
 }
-int AutoSprite::getlargo(){
-	return largo;
+
+void AutoSprite::cambiarColor(int r,int g,int b,int a){
+    color.r=r;
+    color.g=g;
+    color.b=b;
+    color.a=a;
+    sprite.setColor(color);
 }
-void AutoSprite::posajustar(int _x,int _y){
-	x=_x;y=_y;
-	sprite.setPosition(x,y);
+
+Sprite AutoSprite::getSprite(){
+    return sprite;
 }
-void AutoSprite::escalar(float _x,float _y){
-	sprite.setScale(_x,_y);
-	ancho*=_x;
-	largo*=_y;	
+
+Texture AutoSprite::getTexture(){
+    return textura;
+}
+
+
+
+float AutoSprite::getPosicionX(){
+    return posicion.x;
+}
+
+float AutoSprite::getPosicionY(){
+    return posicion.y;
+}
+
+float AutoSprite::getTamanioX(){
+    return dimensiones.x;
+}
+
+float AutoSprite::getTamanioY(){
+    return dimensiones.y;
 }
 

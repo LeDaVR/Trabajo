@@ -1,20 +1,30 @@
-#ifndef	AUTOSPRITE_H
-#define AUTOSPRITE_H
-#include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
+#include "SFML/Graphics.hpp"
+
+using namespace sf;
+
 class AutoSprite{
-	private:
-		int ancho,largo;
-	public:
-		sf::Texture texture;
-		std::string img;
-		int x,y;
-		sf::Sprite sprite;
-		AutoSprite(std::string);
-		void objeto(int,int);
-		int getancho();
-		int getlargo();
-		void posajustar(int,int);
-		void escalar(float,float);
-};
-#endif
+
+private:
+
+    Texture textura;
+    Sprite sprite;
+    Vector2f posicion;
+    Vector2f dimensiones;
+    std::string imagen;
+    Color color;
+
+public:
+
+    AutoSprite(std::string);
+    void ajustarPosicion(float,float);
+    void escalar(float,float);
+    void cambiarColor(int,int,int,int);
+
+    Texture getTexture();
+    Sprite getSprite();
+    float getTamanioX();
+    float getTamanioY();
+    float getPosicionX();
+    float getPosicionY();
+
+} ;
