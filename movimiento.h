@@ -1,11 +1,30 @@
 #ifndef MOVIMIENTO_H
 #define MOVIMIENTO_H
 #include "autoSprite.h"
-bool upcolision(AutoSprite *,AutoSprite **,int,int);
-bool downcolision(AutoSprite *,AutoSprite **,int,int);
-bool leftcolision(AutoSprite *,AutoSprite **,int,int);
-bool rightcolision(AutoSprite *,AutoSprite **,int,int);
-void mover(AutoSprite *,AutoSprite **,int,int,int);
-void moverentidad(AutoSprite *,AutoSprite **,int,int,int);
-void mostrar(sf::RenderWindow &,AutoSprite **,int);
+class SpriteArray{
+	private:
+		int size;
+		AutoSprite *escena;
+		void redimensionar(const int);
+		bool upcolision(AutoSprite,int);
+		bool downcolision(AutoSprite,int);
+		bool leftcolision(AutoSprite,int);
+		bool rightcolision(AutoSprite,int);
+	public:
+		//constructores
+		SpriteArray();
+		SpriteArray(SpriteArray&);
+		~SpriteArray();
+	
+		void addSprite(const AutoSprite);
+		void posicionarSprite(const AutoSprite,const int);
+		void removeSprite(const int);
+		void mostrar(sf::RenderWindow &);
+		void mover(int,int);
+		void moverentidad(int,int);
+		void setview(RenderWindow&,int);
+
+		int getSize() const ;
+};
+
 #endif

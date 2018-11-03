@@ -15,13 +15,15 @@ private:
 
 public:
 
-    AutoSprite(std::string);
+    AutoSprite(std::string="");
     void ajustarPosicion(float,float);
     void escalar(float,float);
     void cambiarColor(int,int,int,int);
 
     Texture getTexture();
     Sprite getSprite();
+    void setImagen(std::string);
+    std::string getImagen();
     float getTamanioX();
     float getTamanioY();
     float getPosicionX();

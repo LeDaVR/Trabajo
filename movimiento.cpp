@@ -1,98 +1,184 @@
 #include "movimiento.h"
-bool upcolision(AutoSprite *a,AutoSprite **b,int cantidad,int len){
-	for(int j=1;j<len;j++){
+
+
+SpriteArray::SpriteArray(){
+	size=0;
+	escena=new AutoSprite[size];
+}
+
+
+SpriteArray::SpriteArray(SpriteArray &_escena){
+	size=_escena.getSize();
+	escena=new AutoSprite[size];
+	for(int i=0;i<size;i++)
+		escena[i]=_escena.escena[i];
+}
+
+SpriteArray::~SpriteArray(){
+	delete[] escena;
+}
+
+void SpriteArray::redimensionar(const int _size){
+		AutoSprite *temp=new AutoSprite[_size];
+		for(int i=0;i<size;i++)
+			temp[i]=escena[i];
+		delete[] escena;
+		escena=temp;
+		size=_size;
+}
+
+
+void SpriteArray::addSprite(const AutoSprite autosprite){
+	redimensionar(size+1);
+	escena[size-1]=autosprite;
+	
+}
+
+void SpriteArray::posicionarSprite(const AutoSprite autosprite,const int pos){
+	redimensionar(size+1);
+	for(int i=size-1;i>pos;i--)
+		escena[i]=escena[i-1];
+	escena[pos]=autosprite;
+}
+
+void SpriteArray::removeSprite(const int pos){
+	for(int i=pos;i<size-1;i++)
+		escena[i]=escena[i+1];
+	redimensionar(size-1);
+}
+int SpriteArray::getSize()const {
+	return size;
+}
+
+void SpriteArray::setview(RenderWindow&a,int objeto){
+	sf::View view(sf::Vector2f(350.f, 300.f), sf::Vector2f(640.f, 480.f));
+	view.setCenter(sf::Vector2f(escena[objeto].getPosicionX()+escena[objeto].getTamanioX()/2,escena[objeto].getPosicionY()+escena[objeto].getTamanioY()/2));
+	a.setView(view);
+}
+
+void SpriteArray::mostrar(sf::RenderWindow &a){
+	for(int i=0;i<size;i++)
+		a.draw(escena[i].getSprite());
+}
+
+
+bool SpriteArray::upcolision(AutoSprite a,int cantidad){
+	for(int j=1;j<size;j++){
 		int arrx[5],x=0;
 		for(int i=0;i<5;i++){
-			arrx[i]=a->getTamanioX()*i/4+a->getPosicionX();
-			if(arrx[i]>=b[j]->getPosicionX()&&arrx[i]<=b[j]->getPosicionX()+b[j]->getTamanioX()&&b[j]!=a)
+			arrx[i]=a.getTamanioX()*i/4+a.getPosicionX();
+			if(arrx[i]>=escena[j].getPosicionX()&&arrx[i]<=escena[j].getPosicionX()+escena[j].getTamanioX()&&&escena[j]!=&a)
 				x++;
 		}
-		if(x>0&&a->getPosicionY()-cantidad<=b[j]->getPosicionY()+b[j]->getTamanioY()&&a->getPosicionY()+a->getTamanioY()>b[j]->getTamanioY()+b[j]->getPosicionY())
+		if(x>0&&a.getPosicionY()-cantidad<=escena[j].getPosicionY()+escena[j].getTamanioY()&&a.getPosicionY()+a.getTamanioY()>escena[j].getTamanioY()+escena[j].getPosicionY())
 			return false;
 	}
 	return true;
 }
-bool downcolision(AutoSprite *a,AutoSprite **b,int cantidad,int len){
-	for(int j=1;j<len;j++){
+
+bool SpriteArray::downcolision(AutoSprite a,int cantidad){
+	for(int j=1;j<size;j++){
 		int arrx[5],x=0;
 		for(int i=0;i<5;i++){
-			arrx[i]=a->getTamanioX()*i/4+a->getPosicionX();
-			if(arrx[i]>=b[j]->getPosicionX()&&arrx[i]<=b[j]->getPosicionX()+b[j]->getTamanioX()&&b[j]!=a)
+			arrx[i]=a.getTamanioX()*i/4+a.getPosicionX();
+			if(arrx[i]>=escena[j].getPosicionX()&&arrx[i]<=escena[j].getPosicionX()+escena[j].getTamanioX()&&&escena[j]!=&a)
 				x++;
 		}
-		if(x>0&&a->getPosicionY()+a->getTamanioY()+cantidad>=b[j]->getPosicionY()&&a->getPosicionY()<b[j]->getPosicionY())
+		if(x>0&&a.getPosicionY()+a.getTamanioY()+cantidad>=escena[j].getPosicionY()&&a.getPosicionY()<escena[j].getPosicionY())
 			return false;				
 	}
 	return true;
 }
-bool leftcolision(AutoSprite *a,AutoSprite **b,int cantidad,int len){
-	for(int j=1;j<len;j++){
+
+bool SpriteArray::leftcolision(AutoSprite a,int cantidad){
+	for(int j=1;j<size;j++){
 		int arry[5],y=0;
 		for(int i=0;i<5;i++){
-			arry[i]=a->getTamanioY()*i/4+a->getPosicionY();
-			if(arry[i]>=b[j]->getPosicionY()&&arry[i]<=b[j]->getPosicionY()+b[j]->getTamanioY()&&b[j]!=a)
+			arry[i]=a.getTamanioY()*i/4+a.getPosicionY();
+			if(arry[i]>=escena[j].getPosicionY()&&arry[i]<=escena[j].getPosicionY()+escena[j].getTamanioY()&&&escena[j]!=&a)
 				y++;
 		}
-		if(y>0&&a->getPosicionX()-cantidad<=b[j]->getPosicionX()+b[j]->getTamanioX()&&a->getPosicionX()+a->getTamanioX()>b[j]->getPosicionX()+b[j]->getTamanioX())
+		if(y>0&&a.getPosicionX()-cantidad<=escena[j].getPosicionX()+escena[j].getTamanioX()&&a.getPosicionX()+a.getTamanioX()>escena[j].getPosicionX()+escena[j].getTamanioX())
 			return false;			
 	}
 	return true;
 }
-bool rightcolision(AutoSprite *a,AutoSprite **b,int cantidad,int len){
-	for(int j=1;j<len;j++){
+
+bool SpriteArray::rightcolision(AutoSprite a,int cantidad){
+	for(int j=1;j<size;j++){
 		int arry[5],y=0;
 		for(int i=0;i<5;i++){
-			arry[i]=a->getTamanioY()*i/4+a->getPosicionY();
-			if(arry[i]>=b[j]->getPosicionY()&&arry[i]<=b[j]->getPosicionY()+b[j]->getTamanioY()&&b[j]!=a)
+			arry[i]=a.getTamanioY()*i/4+a.getPosicionY();
+			if(arry[i]>=escena[j].getPosicionY()&&arry[i]<=escena[j].getPosicionY()+escena[j].getTamanioY()&&&escena[j]!=&a)
 				y++;
 		}
-		if(y>0&&a->getPosicionX()+a->getTamanioX()+cantidad>=b[j]->getPosicionX()&&a->getPosicionX()<b[j]->getPosicionX())
+		if(y>0&&a.getPosicionX()+a.getTamanioX()+cantidad>=escena[j].getPosicionX()&&a.getPosicionX()<escena[j].getPosicionX())
 			return false;	
 	}
 	return true;
 }
-void mover(AutoSprite *autosprite,AutoSprite **a,int cx,int cy,int len){
-	int x=autosprite->getPosicionX();
-	int y=autosprite->getPosicionY();
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)&&upcolision(autosprite,a,cy,len)){
-		y-=cy;
-		autosprite->ajustarPosicion(x,y);
+void SpriteArray::mover(int numero,int velocidad){
+	int x=escena[numero].getPosicionX();
+	int y=escena[numero].getPosicionY();
+	std::string img =escena[numero].getImagen();
+	switch(img[4]){
+			case('0'):{
+				img[4]='1';
+				break;
+			}
+			case('1'):{
+				img[4]='2';
+				break;
+			}
+			case('2'):{
+				img[4]='0';
+				break;
+			}
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)&&downcolision(autosprite,a,cy,len)){
-		y+=cy;	
-		autosprite->ajustarPosicion(x,y);
+	
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)&&upcolision(escena[numero],velocidad)){
+		y-=velocidad;
+		escena[numero].ajustarPosicion(x,y);
+		img[5]='u';
+		escena[numero].setImagen(img);
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)&&leftcolision(autosprite,a,cx,len)){
-		x-=cx;
-		autosprite->ajustarPosicion(x,y);		
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)&&downcolision(escena[numero],velocidad)){
+		y+=velocidad;	
+		escena[numero].ajustarPosicion(x,y);
+		img[5]='d';
+		escena[numero].setImagen(img);
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)&&rightcolision(autosprite,a,cx,len)){
-		x+=cx;	
-		autosprite->ajustarPosicion(x,y);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)&&leftcolision(escena[numero],velocidad)){
+		x-=velocidad;
+		escena[numero].ajustarPosicion(x,y);		
+		img[5]='l';
+		escena[numero].setImagen(img);
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)&&rightcolision(escena[numero],velocidad)){
+		x+=velocidad;	
+		escena[numero].ajustarPosicion(x,y);
+		img[5]='r';
+		escena[numero].setImagen(img);
 	}
 }
-void moverentidad(AutoSprite *autosprite,AutoSprite **a,int cx,int cy,int len){
+void SpriteArray::moverentidad(int numero,int velocidad){
 	int ran=rand()%100+1;
-	int x=autosprite->getPosicionX();
-	int y=autosprite->getPosicionY();
-	if (upcolision(autosprite,a,cy,len)&&ran==1){
-		y-=cy;
-		autosprite->ajustarPosicion(x,y);
+	int x=escena[numero].getPosicionX();
+	int y=escena[numero].getPosicionY();
+	if (upcolision(escena[numero],velocidad)&&ran==1){
+		y-=velocidad;
+		escena[numero].ajustarPosicion(x,y);
 	}else
-	if (downcolision(autosprite,a,cy,len)&&ran==2){
-		y+=cy;	
-		autosprite->ajustarPosicion(x,y);
+	if (downcolision(escena[numero],velocidad)&&ran==2){
+		y+=velocidad;	
+		escena[numero].ajustarPosicion(x,y);
 	}else
-	if (leftcolision(autosprite,a,cx,len)&&ran==3){
-		x-=cx;
-		autosprite->ajustarPosicion(x,y);		
+	if (leftcolision(escena[numero],velocidad)&&ran==3){
+		x-=velocidad;
+		escena[numero].ajustarPosicion(x,y);		
 	}else
-	if (rightcolision(autosprite,a,cx,len)&&ran==4){
-		x+=cx;	
-		autosprite->ajustarPosicion(x,y);
+	if (rightcolision(escena[numero],velocidad)&&ran==4){
+		x+=velocidad;	
+		escena[numero].ajustarPosicion(x,y);
 	}
-}
-void mostrar(sf::RenderWindow &a,AutoSprite **arr,int len){
-	for(int i=0;i<len;i++)
-		a.draw(arr[i]->getSprite());
 }

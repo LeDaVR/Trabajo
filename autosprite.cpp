@@ -1,9 +1,10 @@
 #include "autoSprite.h"
 
-AutoSprite::AutoSprite(std::string archivo=""){
+
+AutoSprite::AutoSprite(std::string archivo){
     textura.loadFromFile(archivo);
     sprite.setTexture(textura);
-
+	imagen=archivo;
     posicion.x=0;
     posicion.y=0;
     dimensiones.x = textura.getSize().x;
@@ -39,7 +40,15 @@ Texture AutoSprite::getTexture(){
     return textura;
 }
 
+void AutoSprite::setImagen(std::string img){
+	textura.loadFromFile(img);
+    sprite.setTexture(textura);
+	imagen=img;
+}
 
+std::string AutoSprite::getImagen(){
+	return imagen;
+}
 
 float AutoSprite::getPosicionX(){
     return posicion.x;
