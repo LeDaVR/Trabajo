@@ -1,9 +1,17 @@
 #include "movimiento.h"
+#include<SFML/Audio.hpp>
 
 
 SpriteArray::SpriteArray(){
 	size=0;
 	escena=new AutoSprite[size];
+
+	aux=0;
+	velocidadMov=10; // a menor numero mas velocidad
+	buffer.loadFromFile("paso.wav");
+    sonido.setBuffer(buffer);
+	cancion.openFromFile("fondo.ogg");
+	cancion.setVolume(30);
 }
 
 
@@ -46,21 +54,25 @@ void SpriteArray::removeSprite(const int pos){
 		escena[i]=escena[i+1];
 	redimensionar(size-1);
 }
-int SpriteArray::getSize()const {
-	return size;
-}
+
 
 void SpriteArray::setview(RenderWindow&a,int objeto){
-	sf::View view(sf::Vector2f(350.f, 300.f), sf::Vector2f(640.f, 480.f));
+	sf::View view(sf::Vector2f(350.f, 300.f), sf::Vector2f(640.f,480.f));
 	view.setCenter(sf::Vector2f(escena[objeto].getPosicionX()+escena[objeto].getTamanioX()/2,escena[objeto].getPosicionY()+escena[objeto].getTamanioY()/2));
 	a.setView(view);
 }
 
 void SpriteArray::mostrar(sf::RenderWindow &a){
+	a.clear();
 	for(int i=0;i<size;i++)
 		a.draw(escena[i].getSprite());
+	a.display();
 }
 
+
+int SpriteArray::getSize()const {
+	return size;
+}
 
 bool SpriteArray::upcolision(AutoSprite a,int cantidad){
 	for(int j=1;j<size;j++){
@@ -70,7 +82,11 @@ bool SpriteArray::upcolision(AutoSprite a,int cantidad){
 			if(arrx[i]>=escena[j].getPosicionX()&&arrx[i]<=escena[j].getPosicionX()+escena[j].getTamanioX()&&&escena[j]!=&a)
 				x++;
 		}
-		if(x>0&&a.getPosicionY()-cantidad<=escena[j].getPosicionY()+escena[j].getTamanioY()&&a.getPosicionY()+a.getTamanioY()>escena[j].getTamanioY()+escena[j].getPosicionY())
+		int aux1=a.getPosicionY()-cantidad;
+		int aux2=escena[j].getPosicionY()+escena[j].getTamanioY();
+		int aux3=a.getPosicionY()+a.getTamanioY();
+		int aux4=escena[j].getTamanioY()+escena[j].getPosicionY();
+		if(x>0&&aux1<=aux2&&aux3>aux4||a.getPosicionY()<escena[0].getPosicionY())
 			return false;
 	}
 	return true;
@@ -84,7 +100,11 @@ bool SpriteArray::downcolision(AutoSprite a,int cantidad){
 			if(arrx[i]>=escena[j].getPosicionX()&&arrx[i]<=escena[j].getPosicionX()+escena[j].getTamanioX()&&&escena[j]!=&a)
 				x++;
 		}
-		if(x>0&&a.getPosicionY()+a.getTamanioY()+cantidad>=escena[j].getPosicionY()&&a.getPosicionY()<escena[j].getPosicionY())
+		int aux1=a.getPosicionY()+a.getTamanioY()+cantidad;
+		int aux2=escena[j].getPosicionY();
+		int aux3=a.getPosicionY();
+		int aux4=escena[j].getPosicionY();
+		if(x>0&&aux1>=aux2&&aux3<aux4||a.getPosicionY()+a.getTamanioX()>escena[0].getPosicionY()+escena[0].getTamanioY())
 			return false;				
 	}
 	return true;
@@ -98,7 +118,11 @@ bool SpriteArray::leftcolision(AutoSprite a,int cantidad){
 			if(arry[i]>=escena[j].getPosicionY()&&arry[i]<=escena[j].getPosicionY()+escena[j].getTamanioY()&&&escena[j]!=&a)
 				y++;
 		}
-		if(y>0&&a.getPosicionX()-cantidad<=escena[j].getPosicionX()+escena[j].getTamanioX()&&a.getPosicionX()+a.getTamanioX()>escena[j].getPosicionX()+escena[j].getTamanioX())
+		int aux1=a.getPosicionX()-cantidad;
+		int aux2=escena[j].getPosicionX()+escena[j].getTamanioX();
+		int aux3=a.getPosicionX()+a.getTamanioX();
+		int aux4=escena[j].getPosicionX()+escena[j].getTamanioX();
+		if(y>0&&aux1<=aux2&&aux3>aux4||a.getPosicionX()<escena[0].getPosicionX())
 			return false;			
 	}
 	return true;
@@ -112,7 +136,11 @@ bool SpriteArray::rightcolision(AutoSprite a,int cantidad){
 			if(arry[i]>=escena[j].getPosicionY()&&arry[i]<=escena[j].getPosicionY()+escena[j].getTamanioY()&&&escena[j]!=&a)
 				y++;
 		}
-		if(y>0&&a.getPosicionX()+a.getTamanioX()+cantidad>=escena[j].getPosicionX()&&a.getPosicionX()<escena[j].getPosicionX())
+		int aux1=a.getPosicionX()+a.getTamanioX()+cantidad;
+		int aux2=escena[j].getPosicionX();
+		int aux3=a.getPosicionX();
+		int aux4=escena[j].getPosicionX();
+		if(y>0&&aux1>=aux2&&aux3<aux4||a.getPosicionX()+a.getTamanioX()>escena[0].getPosicionX()+escena[0].getTamanioX())
 			return false;	
 	}
 	return true;
@@ -121,45 +149,55 @@ void SpriteArray::mover(int numero,int velocidad){
 	int x=escena[numero].getPosicionX();
 	int y=escena[numero].getPosicionY();
 	std::string img =escena[numero].getImagen();
-	switch(img[4]){
-			case('0'):{
-				img[4]='1';
-				break;
-			}
-			case('1'):{
-				img[4]='2';
-				break;
-			}
-			case('2'):{
-				img[4]='0';
-				break;
-			}
+
+	if(aux<velocidadMov){
+		img[4]='1';
 	}
+	else if (aux<velocidadMov*2){
+		img[4]='2';
+	}
+	else if (aux<velocidadMov*3){
+		img[4]='0';
+	}
+	else{
+		aux=0;
+		sonido.play();
+	}	
+
 	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)&&upcolision(escena[numero],velocidad)){
 		y-=velocidad;
 		escena[numero].ajustarPosicion(x,y);
 		img[5]='u';
 		escena[numero].setImagen(img);
+		aux++;
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)&&downcolision(escena[numero],velocidad)){
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)&&downcolision(escena[numero],velocidad)){
 		y+=velocidad;	
 		escena[numero].ajustarPosicion(x,y);
 		img[5]='d';
 		escena[numero].setImagen(img);
+		aux++;
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)&&leftcolision(escena[numero],velocidad)){
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)&&leftcolision(escena[numero],velocidad)){
 		x-=velocidad;
 		escena[numero].ajustarPosicion(x,y);		
 		img[5]='l';
 		escena[numero].setImagen(img);
+		aux++;
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)&&rightcolision(escena[numero],velocidad)){
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)&&rightcolision(escena[numero],velocidad)){
 		x+=velocidad;	
 		escena[numero].ajustarPosicion(x,y);
 		img[5]='r';
 		escena[numero].setImagen(img);
+		aux++;
 	}
+
+	if(Keyboard::isKeyPressed(Keyboard::O))
+            cancion.play();
+
+	
 }
 void SpriteArray::moverentidad(int numero,int velocidad){
 	int ran=rand()%100+1;
@@ -181,4 +219,7 @@ void SpriteArray::moverentidad(int numero,int velocidad){
 		x+=velocidad;	
 		escena[numero].ajustarPosicion(x,y);
 	}
+
+  
+
 }

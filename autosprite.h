@@ -19,10 +19,10 @@ public:
     void ajustarPosicion(float,float);
     void escalar(float,float);
     void cambiarColor(int,int,int,int);
-
+	void setImagen(std::string);
+	
     Texture getTexture();
     Sprite getSprite();
-    void setImagen(std::string);
     std::string getImagen();
     float getTamanioX();
     float getTamanioY();
