@@ -15,7 +15,8 @@ private:
 
 public:
 
-    AutoSprite(std::string="");
+	AutoSprite();
+    AutoSprite(std::string);
     void ajustarPosicion(float,float);
     void escalar(float,float);
     void cambiarColor(int,int,int,int);
