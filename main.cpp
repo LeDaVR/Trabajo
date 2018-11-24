@@ -3,7 +3,7 @@
 using namespace sf;
 //crea intervalo de tiempo de aprox 1 seg
 void wait(){
-	int i=clock()+100;
+	int i=clock()+150;
 	while(i>clock()){}
 }
 
@@ -11,7 +11,7 @@ void wait(){
 int main(){
     RenderWindow juego(VideoMode(800,600),"Litle Farm");
     sf::View view(sf::Vector2f(400.f, 300.f), sf::Vector2f(800.f,600.f));
-
+	juego.setFramerateLimit(60);
 	//juego escenario1    
     EscenarioPrincipal escenario1;
     
@@ -80,11 +80,13 @@ int main(){
 				if(Keyboard::isKeyPressed(Keyboard::C))
 					escenario1.changeTerreno(inventario.getselect());
 				
-				if(escenario1.escena[escenario1.getSize()-1].getPosicionY()==300&&Keyboard::isKeyPressed(Keyboard::X))
+				if(escenario1.checkPosition(895,920,285,310)&&Keyboard::isKeyPressed(Keyboard::X))
 					escenario=2;
 				inventario.mostrarinventario(escenario,escenariotemp);
 				if(Keyboard::isKeyPressed(Keyboard::T))
 					escenario=4;
+				if(Keyboard::isKeyPressed(Keyboard::N))
+					escenario1.nextDay();
 				break;
 			}
 			case(2):{ // casa

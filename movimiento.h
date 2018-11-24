@@ -16,7 +16,7 @@ class SpriteArray{
 		
 		//constructores
 		SpriteArray();
-		SpriteArray(SpriteArray&);
+		SpriteArray(const SpriteArray&);
 		~SpriteArray();
 	
 		
@@ -26,6 +26,7 @@ class SpriteArray{
 		virtual void mostrar(sf::RenderWindow &);
 		void setview(sf::RenderWindow&,int);
 		virtual void mover(int,int,int)=0;
+		bool checkPosition(int,int,int,int);
 
 		int getSize() const ;
 };
@@ -47,10 +48,11 @@ class EscenarioPrincipal : public Escena{
 		AutoSprite persona;
 		AutoSprite casaex;
 		AutoSprite tierra;
-		bool checkPosition(float,float);
+		bool checkTerreno(float,float);
 		public:
 			EscenarioPrincipal();
 			void changeTerreno(std::string);
+			void nextDay();
 			
 };
 

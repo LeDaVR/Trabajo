@@ -12,7 +12,7 @@ SpriteArray::SpriteArray(){
 }
 
 //constructor argumento
-SpriteArray::SpriteArray(SpriteArray &_escena){
+SpriteArray::SpriteArray(const SpriteArray &_escena){
 	size=_escena.getSize();
 	escena=new AutoSprite[size];
 	for(int i=0;i<size;i++)
@@ -27,7 +27,8 @@ SpriteArray::~SpriteArray(){
 // redimensionar
 void SpriteArray::redimensionar(const int _size){
 		AutoSprite *temp=new AutoSprite[_size];
-		for(int i=0;i<size;i++)
+		int minsize=(_size>size)?size:size;
+		for(int i=0;i<minsize;i++)
 			temp[i]=escena[i];
 		delete[] escena;
 		escena=temp;
@@ -71,6 +72,15 @@ void SpriteArray::mostrar(sf::RenderWindow &a){
 	a.display();
 }
 
+bool SpriteArray::checkPosition(int x1,int x2,int y1,int y2){
+	if(escena[size-1].getPosicionX()>x1&&
+	   escena[size-1].getPosicionX()<x2&&
+	   escena[size-1].getPosicionY()>y1&&
+	   escena[size-1].getPosicionY()<y2)
+		return true;
+	return false;
+}
+
 //size
 int SpriteArray::getSize()const {
 	return size;
@@ -96,7 +106,7 @@ bool Escena::upcolision(AutoSprite a,int cantidad){
 		int aux2=escena[j].getPosicionY()+escena[j].getTamanioY();
 		int aux3=a.getPosicionY()+a.getTamanioY();
 		int aux4=escena[j].getTamanioY()+escena[j].getPosicionY();
-		if(x>0&&aux1<=aux2&&aux3>aux4||a.getPosicionY()<escena[0].getPosicionY())
+		if(x>0&&aux1<=aux2&&aux3>aux4||a.getPosicionY()<=escena[0].getPosicionY())
 			return false;
 	}
 	return true;
@@ -116,7 +126,7 @@ bool Escena::downcolision(AutoSprite a,int cantidad){
 		int aux2=escena[j].getPosicionY();
 		int aux3=a.getPosicionY();
 		int aux4=escena[j].getPosicionY();
-		if(x>0&&aux1>=aux2&&aux3<aux4||a.getPosicionY()+a.getTamanioX()>escena[0].getPosicionY()+escena[0].getTamanioY())
+		if(x>0&&aux1>=aux2&&aux3<aux4||a.getPosicionY()+a.getTamanioY()>escena[0].getPosicionY()+escena[0].getTamanioY())
 			return false;				
 	}
 	return true;
@@ -245,7 +255,7 @@ EscenarioPrincipal::EscenarioPrincipal() : Escena(){
 	casaex.setImagen("img/casaex.jpg");
 	tierra.setImagen("img/0dtierra.jpg");
 	fondo.escalar(1200,1200);
-	persona.escalar(100,100);
+	persona.escalar(50,100);
     persona.ajustarPosicion(600,200);
     casaex.ajustarPosicion(700,0);
     casaex.escalar(500,300);
@@ -262,36 +272,60 @@ EscenarioPrincipal::EscenarioPrincipal() : Escena(){
 
 //interaccion del terreno
 void EscenarioPrincipal::changeTerreno(std::string img){
+	std::string posimg;
 	int pos=0;
 	for(int i=0;i<6;i++){
 		for(int j=0;j<6;j++){
 			pos++;
-			if(img=="img/regadera.png")
-				if(checkPosition(i,j)){
-					std::cout<<"entra"<<pos+1<<std::endl;
+			posimg=escena[pos+1].getImagen();
+			if(img=="img/pala.png"&&posimg[4]=='0')
+				if(checkTerreno(i,j))
 					escena[1+pos].setImagen("img/1dtierra.jpg");
-				}
-		}			
+			if(img=="img/regadera.png"&&posimg[4]=='1')
+				if(checkTerreno(i,j))
+					escena[1+pos].setImagen("img/2dtierra.jpg");
+			if(img=="img/combo.png"&&(posimg[4]=='1'||posimg[4]=='2'))
+				if(checkTerreno(i,j))
+					escena[1+pos].setImagen("img/0dtierra.jpg");
+		}
 	}
 }
-bool EscenarioPrincipal::checkPosition(float i,float j){
+bool EscenarioPrincipal::checkTerreno(float i,float j){
 	std::string direccion=escena[size-1].getImagen();
-	int par1=50;
-	int par2=110;
-	int par3=575;
-	int par4=675;
+	int x1=50;
+	int x2=110;
+	int y1=550;
+	int y2=610;
+	std::string direcciones="lrud";
 	for(int m=0;m<4;m++){
+		char dactual=direcciones[m];
 		if(m==1){
-			par1=-90;
-			par2=-60;
+			x1=-90;x2=-50;
 		}
-		if(escena[size-1].getPosicionX()>j*100+par1&&
-	   	   escena[size-1].getPosicionX()<j*100+par2&&
-	   	   escena[size-1].getPosicionY()>par3+i*100&&
-	 	   escena[size-1].getPosicionY()<par4+i*100)
-	  	 	return true;
+		if(m==2){
+			x1=0;x2=50;y1=650;y2=700;
+		}
+		if(m==3){
+			y1=500;y2=550;
+		}
+		if(checkPosition(j*100+x1,j*100+x2,y1+i*100,y2+i*100)&&
+		   dactual==direccion[5])
+	  		return true;
 	}
 	return false;
+}
+
+void EscenarioPrincipal::nextDay(){
+	std::string posimg;
+	int pos=0;
+	for(int i=0;i<6;i++){
+		for(int j=0;j<6;j++){
+			pos++;
+			posimg=escena[pos+1].getImagen();
+			if(posimg=="img/2dtierra.jpg")
+				escena[pos+1].setImagen("img/1dtierra.jpg");
+		}
+	}
 }
 //------------------------------------------------------CLASS MENU
 
