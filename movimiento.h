@@ -1,10 +1,19 @@
 #ifndef MOVIMIENTO_H
 #define MOVIMIENTO_H
-#include "autoSprite.h"
+#include "autosprite.h"
 #include<SFML/Audio.hpp>
-
 //------------------------------------------------------
-class SpriteArray{
+class Tiempo{
+	protected:
+		Time *tiempo;
+	public:
+		Tiempo();
+		float getTime();
+		void setTime();
+		void esperarSeg(float tiemp);
+};
+//--------------------------------------------------
+class SpriteArray:public Tiempo{
 	protected:
 
 		int aux,velocidadMov;

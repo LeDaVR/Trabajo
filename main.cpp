@@ -1,6 +1,7 @@
 #include "movimiento.h"
 #include <iostream>
 using namespace sf;
+using namespace std;
 //crea intervalo de tiempo de aprox 1 seg
 void wait(){
 	int i=clock()+150;
@@ -16,12 +17,17 @@ int main(){
     EscenarioPrincipal escenario1;
     
     //juego casa
-	AutoSprite persona("img/0upersona.png"); 
+	AutoSprite persona("img/0upersona.png");
+	persona.escalar(50,100);
     AutoSprite fondocasa("img/casa.jpg");
-    fondocasa.escalar(600,600);
+    fondocasa.escalar(600,450);
+    AutoSprite cama("img/cama.png"); 
+    persona.ajustarPosicion(275,350);
+    cama.ajustarPosicion(450,0);
+    
     Escena casa;
     casa.addSprite(fondocasa);
-    persona.ajustarPosicion(10,10);
+	casa.addSprite(cama);
     casa.addSprite(persona);
     
     
@@ -49,11 +55,13 @@ int main(){
 	//TIENDA SEEDS
 	Tienda tienda(1,3);	
 
+	//Tiempo
+	Tiempo tiempo;
 	
-    unsigned long i=0;
     int escenario=0;
     int escenariotemp=escenario;
     while(juego.isOpen()){
+    	
         Event event;
         while(juego.pollEvent(event)){
             switch(event.type){
@@ -61,14 +69,17 @@ int main(){
                 juego.close();
         	}
     	}
+    	tiempo.setTime();
+    	cout<<tiempo.getTime()<<endl;
     	// 0)menuprincipal  1)escenario1  2)casa  3)inventario  4)tienda
     	switch(escenario){
     		case(0):{ //menuprincipal
     			menuprincipal.mover(1,0,200);
     			menuprincipal.mostrar(juego);
-    			if(menuprincipal.escena[3].getPosicionY()==200&&Keyboard::isKeyPressed(Keyboard::Return))
+    			if(menuprincipal.escena[3].getPosicionY()==200&&Keyboard::isKeyPressed(Keyboard::Return)){
     				escenario=1;
-    				wait();
+
+				}
     			if(menuprincipal.escena[3].getPosicionY()==400&&Keyboard::isKeyPressed(Keyboard::Return))
     				juego.close();
 				break;
@@ -80,21 +91,37 @@ int main(){
 				if(Keyboard::isKeyPressed(Keyboard::C))
 					escenario1.changeTerreno(inventario.getselect());
 				
-				if(escenario1.checkPosition(895,920,285,310)&&Keyboard::isKeyPressed(Keyboard::X))
+				if(escenario1.checkPosition(900,950,285,310)&&Keyboard::isKeyPressed(Keyboard::X)&&
+				   escenario1.escena[escenario1.getSize()-1].getImagen()[5]=='u'){
+					casa.escena[casa.getSize()-1].setImagen("img/0upersona.png");
 					escenario=2;
+
+				}
+					
 				inventario.mostrarinventario(escenario,escenariotemp);
 				if(Keyboard::isKeyPressed(Keyboard::T))
 					escenario=4;
-				if(Keyboard::isKeyPressed(Keyboard::N))
-					escenario1.nextDay();
+
 				break;
 			}
 			case(2):{ // casa
-				casa.mover(1,3,3);
+				casa.mover(2,3,3);
         		casa.mostrar(juego);
-				casa.setview(juego,1);
-				if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+				casa.setview(juego,2);
+				if(casa.checkPosition(275,315,345,355)&&Keyboard::isKeyPressed(Keyboard::X)
+				   &&casa.escena[2].getImagen()[5]=='d'){
+				   	escenario1.escena[escenario1.getSize()-1].setImagen("img/0dpersona.png");
+
 					escenario=1;
+				}
+				if(casa.checkPosition(545,555,95,105)&&Keyboard::isKeyPressed(Keyboard::X)){
+					escenario1.nextDay();
+					casa.escena[casa.getSize()-1].ajustarPosicion(350,200);
+					juego.clear();
+					juego.display();
+
+				}
+					
 				inventario.mostrarinventario(escenario,escenariotemp);
 				break;
 			}
@@ -102,8 +129,11 @@ int main(){
 				juego.setView(view);
 				inventario.mover(1,200,150);
 				inventario.mostrar(juego);
-				if(Keyboard::isKeyPressed(Keyboard::C))
+				if(Keyboard::isKeyPressed(Keyboard::C)){
 					escenario=escenariotemp;
+
+				}
+					
 				break;
 			}
 			case(4):{ // tienda
@@ -112,7 +142,7 @@ int main(){
 				tienda.mostrar(juego);
 				if(Keyboard::isKeyPressed(Keyboard::X)){
 					inventario.addItem(tienda.comprar());
-					wait();	
+
 				}
 				if(Keyboard::isKeyPressed(Keyboard::C))
 					escenario=1;

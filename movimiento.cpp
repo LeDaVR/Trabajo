@@ -2,7 +2,8 @@
 #include<SFML/Audio.hpp>
 
 #include <iostream>
-#include <ctime>
+
+Clock reloj;
 //----------------------------------------------------------------CLASS SPRITEARRAY
 //constructor defecto
 SpriteArray::SpriteArray(){
@@ -337,7 +338,6 @@ Menu::Menu(int filas,int columnas){
 
 //mover menu
 void Menu::mover(int primeraposicion/*(1)*/,int velocidadx,int velocidady){
-	int i=0;
 	int x=escena[size-1].getPosicionX();
 	int y=escena[size-1].getPosicionY();
 	int fx=escena[primeraposicion].getPosicionX();
@@ -345,24 +345,54 @@ void Menu::mover(int primeraposicion/*(1)*/,int velocidadx,int velocidady){
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)&&y>fy){
 			y-=velocidady;
 			escena[size-1].ajustarPosicion(x,y);
-			i=clock()+100;
+			Tiempo::esperarSeg(0.4);
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)&&y<fy+velocidady*(filas-1)){
 			y+=velocidady;	
 			escena[size-1].ajustarPosicion(x,y);
-			i=clock()+100;
+			Tiempo::esperarSeg(0.4);
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)&&x>fx){
 			x-=velocidadx;
 			escena[size-1].ajustarPosicion(x,y);
-			i=clock()+100;		
+			Tiempo::esperarSeg(0.4);
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)&&x<fx+velocidadx*(columnas-1)){
 			x+=velocidadx;	
 			escena[size-1].ajustarPosicion(x,y);
-			i=clock()+100;
+			Tiempo::esperarSeg(0.4);
 	}
-	while(i>clock()){}
+}
+
+
+//--------------CLASS TIEMPO
+Tiempo::Tiempo(){
+	tiempo = new Time;
+	*tiempo = reloj.getElapsedTime();
+}
+
+float Tiempo::getTime(){ // todo esto para que salga 1.1 osea un decimal :v
+	float temp=tiempo->asSeconds();
+	temp =temp *100000;
+	int a = temp/100000;
+	temp = temp-(a*100000);
+	int b = temp/10000;
+	temp = a+b*0.1;
+	return temp;
+}
+
+void Tiempo::setTime(){
+	*tiempo = reloj.getElapsedTime();
+}
+
+void Tiempo::esperarSeg(float tiemp){
+	*tiempo = reloj.getElapsedTime() ;
+	float aux = getTime()+tiemp;
+
+		while(getTime() < aux){
+
+			*tiempo = reloj.getElapsedTime() ;
+		}
 }
 
 //---------------------------------------------------CLASS INVENTARIO
@@ -412,25 +442,27 @@ void Inventario::mover(int primeraposicion,int velocidadx,int velocidady){
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)&&y>fy){
 			y-=velocidady;
 			escena[size-1].ajustarPosicion(x,y);
-			i=clock()+200;factual--;
+			factual--;
+			Tiempo::esperarSeg(0.4);
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)&&y<fy+velocidady*(filas-1)){
 			y+=velocidady;	
 			escena[size-1].ajustarPosicion(x,y);
-			i=clock()+150;factual++;
+			factual++;
+			Tiempo::esperarSeg(0.4);
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)&&x>fx){
 			x-=velocidadx;
 			escena[size-1].ajustarPosicion(x,y);
-			i=clock()+200;cactual--;
+			cactual--;
+			Tiempo::esperarSeg(0.4);
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)&&x<fx+velocidadx*(columnas-1)){
 			x+=velocidadx;	
 			escena[size-1].ajustarPosicion(x,y);
-			i=clock()+200;cactual++;
+			cactual++;
+			Tiempo::esperarSeg(0.4);
 	}
-	std::cout<<factual<<" "<<cactual<<matriz[factual][cactual]<<"asd"<<std::endl;
-	while(i>clock()){}
 }
 
 //aniadir objeto al inventario
