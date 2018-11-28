@@ -1,4 +1,4 @@
-#include "autosprite.h"
+#include "autoSprite.h"
 
 AutoSprite::AutoSprite::AutoSprite(){
 	imagen="";
@@ -56,20 +56,26 @@ std::string AutoSprite::getImagen(){
 	return imagen;
 }
 
-float AutoSprite::getPosicionX(){
-    return posicion.x;
+void AutoSprite::pseudoDimensiones(float x,float y){
+	dimensiones.x=x;
+	dimensiones.y=y;
 }
 
-float AutoSprite::getPosicionY(){
-    return posicion.y;
+float AutoSprite::getPosicion(char a){
+	if(a=='X')
+    	return posicion.x;
+	if(a=='Y')
+    	return posicion.y;
+    
 }
 
-float AutoSprite::getTamanioX(){
-    return dimensiones.x;
+
+float AutoSprite::getTamanio(char a){
+    if(a=='X')
+		return dimensiones.x;
+	if(a=='Y')
+		return dimensiones.y;
 }
 
-float AutoSprite::getTamanioY(){
-    return dimensiones.y;
-}
 
 
