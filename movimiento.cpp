@@ -1,7 +1,7 @@
 #include "movimiento.h"
 #include <SFML/Audio.hpp>
-
 #include <iostream>
+#include <sstream>
 
 Clock reloj;
 
@@ -29,7 +29,7 @@ SpriteArray::~SpriteArray(){
 // redimensionar
 void SpriteArray::redimensionar(const int _size){
 		AutoSprite *temp=new AutoSprite[_size];
-		int minsize=(_size>size)?size:size;
+		int minsize=(_size>size)?size:_size;
 		for(int i=0;i<minsize;i++)
 			temp[i]=escena[i];
 		delete[] escena;
@@ -206,13 +206,15 @@ void Escena::mover(int velocidadx,int velocidady){
 		escena[size-1].setImagen(img);
 		aux++;
 	}
-	std::cout<<rightcolision(escena[size-1],velocidadx)<<std::endl;
 }
 
 //----------------------------------------------------CLASS ESCENARIOPRINCIPAL
 
 //constructor
 EscenarioPrincipal::EscenarioPrincipal() : Escena(){
+	ppapa.setImagen("img/ppapa.png");
+	pmaiz.setImagen("img/pmaiz.png");
+	ptomate.setImagen("img/ptomate.png");
 	fondo.setImagen("img/fondo.jpg");
 	persona.setImagen("img/0dpersona.png");
 	casaex.setImagen("img/casaex.jpg");
@@ -225,7 +227,6 @@ EscenarioPrincipal::EscenarioPrincipal() : Escena(){
     casaex.escalar(500,300);
 	minijuegos.escalar(150,200);
 	minijuegos.ajustarPosicion(1050,1000);
-    //tierra.escalar(100,100);
     addSprite(fondo);
     addSprite(casaex);
 	addSprite(minijuegos);
@@ -235,34 +236,44 @@ EscenarioPrincipal::EscenarioPrincipal() : Escena(){
     		tierra.ajustarPosicion(j*100,600+i*100);
     		posicionarSprite(tierra,size-1);
 		}
+	escena[size-2].setImagen("img/ts3tierra.jpg");
 }
 
 //interaccion del terreno
-void EscenarioPrincipal::changeTerreno(std::string img){
-	std::string posimg;
+void EscenarioPrincipal::changeTerreno(Inventario* inv){
+	std::string img=inv->getselect();
+	std::string imgparcela;
 	int pos=1;
 	for(int i=0;i<6;i++){
 		for(int j=0;j<6;j++){
 			pos++;
-			posimg=escena[pos+1].getImagen();
+			imgparcela=escena[pos+1].getImagen();
 			if(checkTerreno(i,j)){
 				if(img=="img/combo.png"){
 					escena[1+pos].setImagen("img/0dtierra.jpg");
 					escena[1+pos].pseudoDimensiones(0,0);
 				}
-						
-						
-				if(img=="img/pala.png"&&posimg=="img/0dtierra.jpg")
-						escena[1+pos].setImagen("img/ds0tierra.jpg");
+				if(img=="img/pala.png"&&imgparcela=="img/0dtierra.jpg")
+					escena[1+pos].setImagen("img/ds0tierra.jpg");
 
-				if(img=="img/regadera.png"&&posimg[5]=='s'){
-					posimg[5]='m';
-					escena[1+pos].setImagen(posimg);
+				if(img=="img/regadera.png"&&imgparcela[5]=='s'&&imgparcela[6]<51){
+					imgparcela[5]='m';
+					escena[1+pos].setImagen(imgparcela);
 				}
-
-				if(img=="img/papa.png"||img=="img/tomate.png"||img=="img/maiz.png"){
-					posimg[4]=img[4];
-					escena[1+pos].setImagen(posimg);
+				if(imgparcela[4]=='d'&&(img=="img/papa.png"||img=="img/tomate.png"||img=="img/maiz.png")){
+					imgparcela[4]=img[4];
+					escena[1+pos].setImagen(imgparcela);
+					inv->removecurrentItem();
+				}
+				if(img=="img/hacha.png"&&imgparcela[6]=='3'){
+					if(imgparcela[4]=='m')
+						inv->addItem(pmaiz);
+					else if(imgparcela[4]=='t')
+						inv->addItem(ptomate);
+					else if(imgparcela[4]=='p')
+						inv->addItem(ppapa);
+					escena[1+pos].setImagen("img/0dtierra.jpg");
+					escena[1+pos].pseudoDimensiones(0,0);
 				}
 			}
 		}
@@ -295,14 +306,14 @@ bool EscenarioPrincipal::checkTerreno(float i,float j){
 
 void EscenarioPrincipal::nextDay(){
 	std::string posimg;
-	int pos=0;
+	int pos=1;
 	for(int i=0;i<6;i++){
 		for(int j=0;j<6;j++){
 			pos++;
 			posimg=escena[pos+1].getImagen();
-			if(posimg=="img/dm0.jpg")
+			if(posimg=="img/dm0tierra.jpg")
 				escena[pos+1].setImagen("img/ds0tierra.jpg");
-			if(posimg[5]=='m'){
+			else if(posimg[5]=='m'){
 				posimg[5]='s';
 				if(posimg[6]=='0'){
 					escena[pos+1].pseudoDimensiones(100,100);
@@ -324,12 +335,12 @@ Carrera::Carrera(){
 	fondo.setImagen("img/fondocarrera.jpg");
 	tronco.setImagen("img/tronco.png");
 	aguila.setImagen("img/aguila.jpg");
-	cuy.setImagen("img/cuy.jpg");
-	fondo.escalar(2000,480);
-	tronco.escalar(60,100);
-	tronco.ajustarPosicion(400,380);
+	cuy.setImagen("img/0rvenado.png");
+	fondo.escalar(3000,480);
+	tronco.escalar(60,50);
+	tronco.ajustarPosicion(600,430);
 	aguila.escalar(250,150);
-	aguila.ajustarPosicion(400,300);
+	aguila.ajustarPosicion(400,200);
 	cuy.escalar(110,65);
 	cuy.ajustarPosicion(0,415);
 	addSprite(fondo);
@@ -350,22 +361,47 @@ void Carrera::setviewcuy(sf::RenderWindow&a){
 	a.setView(view);
 }
 
-void Carrera::movercuy(int numero,int velocidady){
+void Carrera::movercuy(int numero,int velocidady,sf::RenderWindow &a){
 	int x=escena[3].getPosicion('X')+numero;
 	int y=escena[3].getPosicion('Y');
+	std::string img=escena[3].getImagen();
+	if(aux<velocidadMov){
+		img[4]='1';
+	}
+	else if (aux<velocidadMov*2){
+		img[4]='2';
+	}
+	else if (aux<velocidadMov*3){
+		img[4]='0';
+	}
+	else{
+		aux=0;
+	}	
 	if(rightcolision(escena[3],1)){
 		escena[3].ajustarPosicion(x,y);
+		escena[3].setImagen(img);
+		aux++;
 	}
+
 	if(escena[3].getPosicion('X')>=1600)
-		escena[3].ajustarPosicion(300,y);
+		escena[3].ajustarPosicion(200,y);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
-			y-=velocidady;
-			escena[3].ajustarPosicion(x,y);	
-		}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
-		y+=velocidady;	
-		escena[3].ajustarPosicion(x,y);	
-	}		
+			for(int i=0;i<10;i++){
+				y-=velocidady+i;
+				x+=8;
+				escena[3].ajustarPosicion(x,y);	
+				setviewcuy(a);
+					int b=i;
+				mostrar(a);
+			}
+			for(int i=0;i<10;i++){
+				y+=velocidady+i;
+				x+=8;
+				escena[3].ajustarPosicion(x,y);
+				setviewcuy(a);
+				mostrar(a);
+			}
+	}
 }
 
 
@@ -449,7 +485,10 @@ void Tiempo::esperarSeg(float tiemp){
 //---------------------------------------------------CLASS INVENTARIO
 
 //constructor de inventario
-Inventario::Inventario(int f,int c): Menu(f,c){ 
+Inventario::Inventario(int f,int c): Menu(f,c){
+
+	fuente.loadFromFile("coolveticarg.ttf");
+	texto.setFont(fuente);
 	factual=0;
 	cactual=0;
 	dinero=1000;
@@ -459,22 +498,39 @@ Inventario::Inventario(int f,int c): Menu(f,c){
 	for(int i=0;i<f;i++)
 		for(int j=0;j<c;j++)
 			matriz[i][j]=" ";
-	regadera.setImagen("img/regadera.png");
-	pala.setImagen("img/pala.png");
-	hacha.setImagen("img/hacha.png");
-	combo.setImagen("img/combo.png");
+	regadera.setImagen("img/regadera.png");regadera.ajustarPosicion(50+600,25);regadera.escalar(100,100);
+	pala.setImagen("img/pala.png");pala.ajustarPosicion(50+400,25);pala.escalar(100,100);
+	hacha.setImagen("img/hacha.png");hacha.ajustarPosicion(50,25);hacha.escalar(100,100);
+	combo.setImagen("img/combo.png");combo.ajustarPosicion(50+200,25);combo.escalar(100,100);
 	fondo.setImagen("img/invmenu.jpg");
-	addSprite(fondo);
 	select.setImagen("img/SELECCIONAR.png");
 	select.escalar(100,100);
 	select.ajustarPosicion(50,25);
+	vacio.setImagen(" ");vacio.escalar(100,100);
+	addSprite(fondo);
+	addSprite(hacha);     matriz[0][0]=hacha.getImagen();
+	addSprite(combo);     matriz[0][1]=combo.getImagen();
+	addSprite(pala);      matriz[0][2]=pala.getImagen();
+	addSprite(regadera);  matriz[0][3]=regadera.getImagen();
+	for(int i=1;i<filas;i++)
+		for(int j=0;j<columnas;j++){
+				matriz[i][j]=vacio.getImagen();
+				vacio.ajustarPosicion(50+200*j,25+150*i);
+				addSprite(vacio);
+		}
 	addSprite(select);
-	addItem(hacha);
-	addItem(combo);
-	addItem(pala);
-	addItem(regadera);
 }
 
+void Inventario::mostrar(sf::RenderWindow& a){
+	a.clear();
+	for(int i=0;i<size;i++)
+		a.draw(escena[i].getSprite());
+	std::ostringstream ss;
+	ss<<dinero;
+	texto.setString("DINERO: "+ss.str());
+	a.draw(texto);
+	a.display();
+}
 //cambia el escenario al inventario
 void Inventario::mostrarinventario(int &escenario,int &escenariotemp){
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return)){
@@ -516,22 +572,48 @@ void Inventario::mover(int velocidadx,int velocidady){
 }
 
 //aniadir objeto al inventario
-void Inventario::addItem(AutoSprite iditem){
+void Inventario::addItem(AutoSprite item){
+	AutoSprite iditem=item;
 	iditem.escalar(100,100);
-	for(int i=0;i<filas;i++)
+	for(int i=0;i<size;i++)
+		std::cout<<escena[i].getPosicion('X')<<"   "<<escena[i].getPosicion('Y')<<std::endl;
+	for(int i=1;i<filas;i++)
 		for(int j=0;j<columnas;j++)
 			if(matriz[i][j]==" "){
 				matriz[i][j]=iditem.getImagen();
 				iditem.ajustarPosicion(50+200*j,25+150*i);
-				posicionarSprite(iditem,size-1);
+				escena[4*i+j+1]=iditem;	
+				std::cout<<escena[4*i+j+1].getImagen()<<std::endl;
 				return;
 			}
+}
+void Inventario::setDinero(int _dinero){
+	dinero=_dinero;
+}
+int Inventario::getDinero(){
+	return dinero;
 }
 
 //seleccion actual
 
-std::string Inventario::getselect(){
+std::string Inventario::getselect()const{
 	return matriz[factual][cactual];
+}
+
+void Inventario::removecurrentItem(){
+	std::cout<<(4*factual)+cactual+1<<escena[(4*factual)+cactual+1].getImagen()<<" "<<size<<std::endl;
+	matriz[factual][cactual]=" ";
+	int spriteactual=(4*factual)+cactual+1;
+	AutoSprite transparente("img/transparente.png");
+	escena[spriteactual].setImagen(transparente.getImagen());
+}
+
+void Inventario::sell(){
+	std::string currentimg=matriz[factual][cactual];
+	if(currentimg=="img/ptomate.png"||currentimg=="img/ptomate.png"||currentimg=="img/pmaiz.png"){
+		removecurrentItem();
+		dinero+=300;
+	}
 }
 //destructor
 Inventario::~Inventario(){
@@ -566,10 +648,15 @@ Tienda::Tienda(int filas,int columnas) : Menu(filas,columnas){
 
 
 //retorna el autosprite comprado
-AutoSprite Tienda::comprar(){
-	for(int i=1;i<size-1;i++)
-	if(escena[size-1].getPosicion('X')==escena[i].getPosicion('X'))
-		return escena[i];
+AutoSprite Tienda::comprar(Inventario* inv){
+	for(int i=1;i<size-1;i++){
+		if(escena[size-1].getPosicion('X')==escena[i].getPosicion('X')&&inv->getDinero()>=200){
+			inv->setDinero(inv->getDinero()-200);
+			return escena[i];
+		}
+	}
+	AutoSprite vacio(" ");
+	return vacio;
 }
 
 

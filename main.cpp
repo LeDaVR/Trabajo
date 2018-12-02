@@ -102,7 +102,7 @@ int main(){
     	tiempo.setTime();
     	//cout<<tiempo.getTime()<<endl;
 
-    	// 0)menuprincipal  1)escenario1  2)casa  3)inventario  4)tienda
+    	// 0)menuprincipal  1)escenario1  2)casa  3)inventario  4)tiendas
     	switch(escenario){
     		case(0):{ //menuprincipal
     			menuprincipal.mover(0,200);
@@ -120,9 +120,10 @@ int main(){
 				escenario1.mover(3,3);
         		escenario1.mostrar(juego);
 				escenario1.setview(juego,escenario1.getSize()-1);
-				if(Keyboard::isKeyPressed(Keyboard::C))
-					escenario1.changeTerreno(inventario.getselect());
-				
+				if(Keyboard::isKeyPressed(Keyboard::C)){
+					escenario1.changeTerreno(&inventario);
+				}
+					
 				if(escenario1.checkPosition(900,950,285,310)&&Keyboard::isKeyPressed(Keyboard::X)&&
 				   escenario1.escena[escenario1.getSize()-1].getImagen()[5]=='u'){
 					casa.escena[casa.getSize()-1].setImagen("img/0upersona.png");
@@ -166,7 +167,8 @@ int main(){
 					escenario=escenariotemp;
     				tiempo.esperarSeg(0.3);
 				}
-					
+				if(Keyboard::isKeyPressed(Keyboard::S))
+					inventario.sell();
 				break;
 			}
 			case(4):{ // tienda
@@ -174,7 +176,7 @@ int main(){
 				tienda.mover(200,200);
 				tienda.mostrar(juego);
 				if(Keyboard::isKeyPressed(Keyboard::X)){
-					inventario.addItem(tienda.comprar());
+					inventario.addItem(tienda.comprar(&inventario));
 					tiempo.esperarSeg(0.3);
 				}
 				if(Keyboard::isKeyPressed(Keyboard::C))
@@ -182,7 +184,7 @@ int main(){
 				break;
 			}
 			case(5):{
-				carrera.movercuy(3,3);
+				carrera.movercuy(3,3,juego);
 				carrera.moverAguila(1);
         		carrera.mostrar(juego);
 				carrera.setviewcuy(juego);

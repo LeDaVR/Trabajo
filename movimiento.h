@@ -64,27 +64,13 @@ class Carrera : public 	Escena {
 	public:
 		Carrera();
 		void moverAguila(int); //velocidad
-		void movercuy(int,int);
+		void movercuy(int,int,RenderWindow &);
 		void setviewcuy(RenderWindow &);
 		
 };
 
 
-//---------------------------------------------------------------------------
-class EscenarioPrincipal : public Escena{
-	private:
-		AutoSprite fondo;
-		AutoSprite persona;
-		AutoSprite casaex;
-		AutoSprite tierra;
-		AutoSprite minijuegos;
-		bool checkTerreno(float,float);
-	public:
-		EscenarioPrincipal();
-		void changeTerreno(std::string);
-		void nextDay();
-			
-};
+
 
 //---------------------------------------------------------------------------
 class Menu : public SpriteArray{
@@ -101,23 +87,53 @@ class Menu : public SpriteArray{
 //----------------------------------------------------------------------------
 class Inventario : public Menu{
 	private:
+		sf::Font fuente;
+		sf::Text texto;
 		AutoSprite fondo;
 		AutoSprite select;
 		AutoSprite hacha;
 		AutoSprite pala;
 		AutoSprite combo;
 		AutoSprite regadera;
+		AutoSprite vacio;
 		int dinero;
 		std::string **matriz;
 		int factual,cactual;
+		
+
 	public:
 		Inventario(int,int);
 		~Inventario();
-		
+	
+		void mostrar(sf::RenderWindow&);
 		void mostrarinventario(int&,int&);
 		void mover(int,int);
 		void addItem(AutoSprite autosprite);
-		std::string getselect();
+		void removecurrentItem();
+		void setDinero(int);
+		void sell();
+		
+		int getDinero();
+		std::string getselect() const ;
+};
+
+//---------------------------------------------------------------------------
+class EscenarioPrincipal : public Escena{
+	private:
+		AutoSprite ppapa;
+		AutoSprite pmaiz;
+		AutoSprite ptomate;	
+		AutoSprite fondo;
+		AutoSprite persona;
+		AutoSprite casaex;
+		AutoSprite tierra;
+		AutoSprite minijuegos;
+		bool checkTerreno(float,float);
+	public:
+		EscenarioPrincipal();
+		void changeTerreno(Inventario*);
+		void nextDay();
+			
 };
 //----------------------------------------------------------------------
 class Tienda : public Menu{
@@ -129,7 +145,7 @@ class Tienda : public Menu{
 		AutoSprite papa;
 	public:
 		Tienda(int,int);
-		AutoSprite comprar();
+		AutoSprite comprar(Inventario*);
 };
 
 
