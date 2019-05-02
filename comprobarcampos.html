@@ -1,0 +1,84 @@
+Leonardo Daniel Valdivia Ramos 
+
+<html>
+    <head>
+     	<script language="javascript">
+       		function validation(letras,msg){
+       			var a=letras.value;
+       			if(a==""){
+       				mostrar(msg,"mostrar");
+       				return false;
+       			}
+       			for(var i=0;i<a.length;i++){
+	       			if(a[i]>=0&&a[i]<=9){
+	       				mostrar(msg,"mostrar");
+	       				return false;
+	       			}
+       			}
+       			mostrar(msg,"ocultar");
+       			return true;
+       		}
+       		function valcorreo(varcorreo,msg){
+       			var correo=varcorreo.value;
+       			var i=1;
+       			while(correo[i]!="@"&&i<correo.length){
+	       			i++;
+       			}
+       			if(i!=correo.length-1){
+       				i=i+1;
+       				while(correo[i]!="."&&i<correo.length)
+       					i++;
+       				if(i!=correo.length-1&&correo.length-i-1<4&&correo.length-i-1>1&&correo[i-1]!="@"){
+       					mostrar(msg,"ocultar");
+       					return true;
+       				}
+       			}
+       			mostrar(msg,"mostrar");
+       			return false;
+       		}
+       		function mostrar(x,y){
+       			if(y=="ocultar"){
+       				document.getElementById(x).style.display='none';
+       			}
+       			if(y=="mostrar"){
+       				document.getElementById(x).style.display='block';
+       			}
+       		}
+
+       		function completado(id1,id2,id3,r1,r2){
+       			if(document.getElementById(id1).style.display=='none')
+       				if(document.getElementById(id2).style.display=='none')
+       					if(document.getElementById(id3).style.display=='none')
+       						if(document.getElementById(r1).checked==true||document.getElementById(r2).checked==true)
+       							return true;
+       			alert("Rellene los datos necesarios");
+       			return false;
+       		}
+    	</script>
+
+    	<h1>FORMULARIO</h1>
+    </head>     
+    <body>
+		<form name="formulario">
+			Nombre: <input type="text" name="fname"   onblur="validation(this,'names')"><br>
+			<p id="names"><font color="#FB0202">Llene este campo</font></p>
+	  		Apellido: <input type="text" name="lname" onblur="validation(this,'2names')"><br>	
+	  		<p id="2names"><font color="#FB0202">Llene este campo</font></p>
+	  		Sexo: Hombre<input type="radio" name="gender" id="r1">
+	  		      Mujer<input type="radio" name="gender" id="r2"><br>
+	  		Correo: <input type="text" name="correo" onblur="valcorreo(this,'gmail')"><br>
+	  		<p id="gmail"><font color="#FB0202">Llene este campo</font></p>
+	  		Ciudad:
+	  		<select value="Arequipa">
+	  			<option>Arequipa</option>
+	  			<option>Cuzco</option>
+	  			<option>Lima</option>
+	  			<option>Otro</option>
+	  		</select><br>
+	  		Mensaje: <textarea id="mensaje" ></textarea><br>
+	  		<input type="checkbox" name="gender"> :Deseo Recibir Notificaciones<br>
+	  		<input type="submit" name="enviar" onclick="return completado('names','2names','gmail','r1','r2');"><br>
+		</form>
+
+    </body>
+</html>
