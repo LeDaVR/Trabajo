@@ -45,12 +45,13 @@ Leonardo Daniel Valdivia Ramos
        			}
        		}
 
-       		function completado(id1,id2,id3,r1,r2){
+       		function completado(id1,id2,id3,r1,r2,id4){
        			if(document.getElementById(id1).style.display=='none')
        				if(document.getElementById(id2).style.display=='none')
        					if(document.getElementById(id3).style.display=='none')
        						if(document.getElementById(r1).checked==true||document.getElementById(r2).checked==true)
-       							return true;
+                    if(document.getElementById(id4).checked==true)
+       							  return true;
        			alert("Rellene los datos necesarios");
        			return false;
        		}
@@ -76,8 +77,8 @@ Leonardo Daniel Valdivia Ramos
 	  			<option>Otro</option>
 	  		</select><br>
 	  		Mensaje: <textarea id="mensaje" ></textarea><br>
-	  		<input type="checkbox" name="gender"> :Deseo Recibir Notificaciones<br>
-	  		<input type="submit" name="enviar" onclick="return completado('names','2names','gmail','r1','r2');"><br>
+	  		<input type="checkbox" id="notifi" name="gender"> :Deseo Recibir Notificaciones<br>
+	  		<input type="submit" name="enviar" onclick="return completado('names','2names','gmail','r1','r2','notifi');"><br>
 		</form>
 
     </body>
