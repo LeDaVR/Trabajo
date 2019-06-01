@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+  $("#b1").click(function(){
+    $.ajax({url: "http://localhost:8080/CategoryRestService/FindById/"+$("#findbyid").val(), success: function(result){
+    	console.log(result);
+        $("#div1").html(result);
+    }});
+  });
+  $("#b2").click(function(){
+    $.ajax({url: "http://localhost:8080/CategoryRestService/FindByName/"+$("#findbyname").val(), success: function(result){
+    	console.log(result);
+      $("#div1").html(result);
+    }});
+  });
+});
+</script>
+</head>
+<body>
+
+<div id="div1"><h2 id="h">JQUERY--AJAX----</h2></div>
+<input type="text" id="findbyid"><br>
+<button id="b1">FIND BY ID</button><br>
+<input type="text" id="findbyname"><br>
+<button id="b2">FIND BY NAME</button><br>
+</body>
+</html>
