@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Clients</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_nuevo_cliente">NuevoCliente</string>
+</resources>
